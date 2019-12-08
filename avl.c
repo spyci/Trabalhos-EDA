@@ -39,11 +39,11 @@ noArv *Rot_dir(arvAvl *A, noArv *n){
     else{
         if(n == n->pai->esq){
 //            printf("%lld pai de %lld recebe filho esq = %lld\n", n->pai->chave, n->chave, y->chave);
-            y->pai->esq = y;
+            n->pai->esq = y;
         }
         else{
 //            printf("%lld pai de %lld recebe filho dir = %lld\n", n->pai->chave, n->chave, y->chave);
-            y->pai->dir = y;
+            n->pai->dir = y;
   //          //printf("agr e: %lld\n", n->pai->dir->chave);
         }
     }
@@ -80,7 +80,7 @@ noArv *Copia(noArv *n){
     return retNoArv;
 }
 
-void *Transplante(arvAvl *A, noArv *n, noArv *m){
+noArv *Transplante(arvAvl *A, noArv *n, noArv *m){
     if (n->pai==NULL)
         A->raiz = m;
     else if (n==n->pai->esq)
@@ -89,6 +89,7 @@ void *Transplante(arvAvl *A, noArv *n, noArv *m){
         n->pai->dir = m;
     if (m!=NULL)
         m->pai = n->pai;
+    return m;
 }
 
 llint balanco(noArv *n){
@@ -133,6 +134,7 @@ void Balanceamento(arvAvl *A, noArv *n){
 noArv *Inserir_AVL(arvAvl *A, noArv *n, noArv *m){
     if (A->raiz == NULL){
         A->raiz = m;
+        m->pai = NULL;
         return m;
     }
     else{
@@ -152,6 +154,7 @@ noArv *Inserir_AVL(arvAvl *A, noArv *n, noArv *m){
             else
               n->dir = Inserir_AVL(A, n->dir, m);
           }
+    atualizar_altura(n);
     if(balanco(n)==2||balanco(n)==-2){
         Balanceamento(A,n);
     }
@@ -168,14 +171,15 @@ noArv *Remover_AVL(arvAvl *A, noArv *n, llint m){
             n->dir = Remover_AVL(A, n->dir, m);
     else{
           if (n->esq == NULL){
-            Transplante(A, n, n->dir);
+            noArv *aux = Transplante(A, n, n->dir);
             free(n);
-            n=NULL;
+            n = aux;
           }
           else if (n->dir == NULL){
               Transplante(A, n, n->esq);
+              noArv *aux = Transplante(A, n, n->dir);
               free(n);
-              n = NULL;
+              n = aux;
           }
           else{
               noArv *y = Avl_minimo(n->dir);
@@ -228,4 +232,12 @@ void InOrder_rev(noArv *node){
     InOrder_rev(node->dir);
     printf("%lld %lld %lld\n", node->chave, node->opr, node->valor);
     InOrder_rev(node->esq);
+}
+void InOrder_debug(noArv *node){
+  if (node == NULL)
+      return;
+  printf("no:%lld ponteiro:%p esq: %p dir: %p pai: %p\n", node->chave, node, node->esq, node->dir, node->pai);
+  InOrder_debug(node->esq);
+  InOrder_debug(node->dir);
+
 }

@@ -10,7 +10,7 @@ noArv *Rot_esq(arvAvl *A, noArv* n);
 noArv *Rot_dir(arvAvl *A, noArv* n);
 noArv *Rot_dup_esq(arvAvl *A, noArv *n);
 noArv *Rot_dup_dir(arvAvl *A, noArv *n);
-void *Transplante(arvAvl *A, noArv *n, noArv *m);
+noArv *Transplante(arvAvl *A, noArv *n, noArv *m);
 noArv *Copia(noArv *n);
 llint balanco(noArv *n);
 noArv *Avl_minimo(noArv *n);
@@ -21,4 +21,7 @@ void InOrder(noArv *node);
 void InOrder_rev(noArv *node);
 noArv *Procurar_AVL(noArv *n, llint chave);
 llint Altura_AVL(arvAvl *A);
+
+void InOrder_debug(noArv *node);
+
 #endif
